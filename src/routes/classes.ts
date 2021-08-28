@@ -4,6 +4,7 @@ import StudentModel from '../models/student';
 
 const router = express.Router();
 
+// WORKING
 router.post('/', async (req: Request, res: Response) => {
   try {
     const {
@@ -11,7 +12,6 @@ router.post('/', async (req: Request, res: Response) => {
       id, courseCode, faculty, building, time, location,
     } = req.body;
 
-    // SEE IF AFTER REMOVING U GET SOMETHING
     const classOfStudent = await ClassModel.create(req.body);
     if (!classOfStudent) {
       res.json({ success: false, message: 'Class not found' });
@@ -29,6 +29,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// WORKING
 router.get('/:courseCode', async (req: Request, res: Response) => {
   try {
     const { courseCode } = req.params;
@@ -54,6 +55,7 @@ router.get('/:courseCode', async (req: Request, res: Response) => {
   }
 });
 
+// NOT WORKING PROPERLY
 router.post('/:studentId', async (req:Request, res: Response) => {
   try {
     const { studentId } = req.params;
@@ -93,6 +95,7 @@ router.post('/:studentId', async (req:Request, res: Response) => {
   }
 });
 
+// NOT WORKING PROPERLY
 router.post('/:studentId/:classId', async (req: Request, res: Response) => {
   try {
     const { studentId, classId } = req.params;
@@ -121,6 +124,7 @@ router.post('/:studentId/:classId', async (req: Request, res: Response) => {
   }
 });
 
+// WORKING
 router.get('/student/:studentId', async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
@@ -146,6 +150,7 @@ router.get('/student/:studentId', async (req: Request, res: Response) => {
   }
 });
 
+// WORKING
 router.get(
   '/classes-on-map/:courseCode',
   async (req: Request, res: Response) => {
@@ -160,9 +165,10 @@ router.get(
 
       const classes = await ClassModel.findOne({ courseCode });
 
+      // eslint-disable-next-line no-unused-vars
       const students = await StudentModel.findOne({
         'classes.courseCode': courseCode,
-      }).count();
+      }).countDocuments();
 
       if (!classes) {
         res.json({ success: false, message: 'Classes not found' });
