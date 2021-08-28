@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import http from 'http';
 import logger from './utils/logger';
 import connectDB from './models/db';
@@ -10,6 +11,9 @@ dotenv.config();
 connectDB(process.env.DB_URL || '');
 
 const app = express();
+
+app.use(cors());
+
 const server = http.createServer(app);
 
 app.use(express.urlencoded({

@@ -32,20 +32,20 @@ router.get('/:rollNo', async (req: Request, res: Response) => {
   try {
     const { rollNo } = req.params;
     if (!rollNo) {
-      res.json({ success: false, message: 'Required fields cannot be empty' });
+      return res.json({ success: false, message: 'Required fields cannot be empty' });
     }
     const student = await StudentModel.findOne({ rollNo });
     if (!student) {
-      res.json({ succes: false, message: 'Student cannot be found' });
-    } else {
-      res.json({
-        success: true,
-        message: 'Student found successfully',
-        data: { rollNo: student.rollNo, student: student.name },
-      });
+      return res.json({ succes: false, message: 'Student cannot be found' });
     }
+
+    return res.json({
+      success: true,
+      message: 'Student found successfully',
+      data: { rollNo: student.rollNo, student: student.name },
+    });
   } catch (e) {
-    res.json({ success: false, message: e });
+    return res.json({ success: false, message: e });
   }
 });
 
