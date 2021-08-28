@@ -8,7 +8,6 @@ export const ClassSchema = new mongoose.Schema({
   },
   courseCode: {
     type: String,
-    unique: true,
   },
   faculty: {
     type: String,

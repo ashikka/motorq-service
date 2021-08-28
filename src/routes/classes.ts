@@ -1,14 +1,14 @@
+/* eslint-disable no-unused-vars */
 import express, { Request, Response } from 'express';
 import ClassModel from '../models/classes';
 import StudentModel from '../models/student';
 
 const router = express.Router();
 
-// WORKING
+/* ----------------------- Sample route ------------------------------*/
 router.post('/', async (req: Request, res: Response) => {
   try {
     const {
-      // eslint-disable-next-line no-unused-vars
       id, courseCode, faculty, building, time, location,
     } = req.body;
 
@@ -18,7 +18,7 @@ router.post('/', async (req: Request, res: Response) => {
     } else {
       res.json({
         success: true,
-        message: 'Class removed successfully',
+        message: 'Class created successfully',
         data: {
           classOfStudent,
         },
@@ -29,7 +29,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-// WORKING
+/* ----------------------- Get classes for given courseCode ------------------------------*/
 router.get('/:courseCode', async (req: Request, res: Response) => {
   try {
     const { courseCode } = req.params;
@@ -55,47 +55,49 @@ router.get('/:courseCode', async (req: Request, res: Response) => {
   }
 });
 
-// NOT WORKING PROPERLY
+/* ----------------------- Add new class to student if no clashes ------------------------------*/
+
 router.post('/:studentId', async (req:Request, res: Response) => {
   try {
     const { studentId } = req.params;
     const {
-      // eslint-disable-next-line no-unused-vars
       id, courseCode, faculty, building, time, location,
     } = req.body;
     if (!studentId) {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
 
-    const student = await StudentModel.findOne({ rollNo: studentId });
+    const student = await StudentModel.findOne({ rollNo: studentId, 'classes.time': time });
 
     if (!student) {
-      res.json({ success: false, message: 'Student not found' });
-    }
-    const updatedStudent = await StudentModel.findOneAndUpdate(
-      { rollNo: studentId },
-      { $addToSet: { classes: req.body } },
-      { new: true },
-    );
-    if (updatedStudent) {
-      res.json({
-        success: true,
-        message: 'Classes updated successfully',
-        data: {
-          student: {
-            rollNo: updatedStudent.rollNo,
-            name: updatedStudent.name,
-            classes: updatedStudent.classes,
+      const updatedStudent = await StudentModel.findOneAndUpdate(
+        { rollNo: studentId },
+        { $push: { classes: req.body } },
+        { new: true },
+      );
+      if (updatedStudent) {
+        res.json({
+          success: true,
+          message: 'Classes updated successfully',
+          data: {
+            student: {
+              rollNo: updatedStudent.rollNo,
+              name: updatedStudent.name,
+              classes: updatedStudent.classes,
+            },
           },
-        },
-      });
+        });
+      }
+    } else {
+      res.json({ success: false, message: 'Classes are clashing' });
     }
   } catch (e) {
     res.json({ success: false, message: e });
   }
 });
 
-// NOT WORKING PROPERLY
+/* ------------- Deletes a class with the given classId from the student’s entity ---------------*/
+
 router.post('/:studentId/:classId', async (req: Request, res: Response) => {
   try {
     const { studentId, classId } = req.params;
@@ -103,28 +105,32 @@ router.post('/:studentId/:classId', async (req: Request, res: Response) => {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
 
-    // SEE IF AFTER REMOVING U GET SOMETHING
-    const classOfStudent = await StudentModel.findOneAndDelete({
+    const classOfStudent = await StudentModel.deleteMany({
       rollNo: studentId,
       'classes.id': classId,
-    }, { new: true });
+    });
+
     if (!classOfStudent) {
       res.json({ success: false, message: 'Class not found' });
     } else {
-      res.json({
-        success: true,
-        message: 'Class removed successfully',
-        data: {
-          classOfStudent,
-        },
-      });
+      const updatedClasses = await StudentModel.findOne({ rollNo: studentId });
+      if (updatedClasses) {
+        res.json({
+          success: true,
+          message: 'Class removed successfully',
+          data: {
+            classes: updatedClasses.classes,
+          },
+        });
+      }
     }
   } catch (e) {
     res.json({ success: false, message: e });
   }
 });
 
-// WORKING
+/* -------------- Gets all the classes registered by the student with rollNo ----------------*/
+
 router.get('/student/:studentId', async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
@@ -150,7 +156,8 @@ router.get('/student/:studentId', async (req: Request, res: Response) => {
   }
 });
 
-// WORKING
+/* -------------- Get an array of classes of the given courseCode on map ----------------*/
+
 router.get(
   '/classes-on-map/:courseCode',
   async (req: Request, res: Response) => {
@@ -165,7 +172,6 @@ router.get(
 
       const classes = await ClassModel.findOne({ courseCode });
 
-      // eslint-disable-next-line no-unused-vars
       const students = await StudentModel.findOne({
         'classes.courseCode': courseCode,
       }).countDocuments();
