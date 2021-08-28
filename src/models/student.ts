@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { StudentDocSchema } from '../utils/interfaces';
-import ClassSchema from './classes';
+import { ClassSchema } from './classes';
 
 export const StudentSchema = new mongoose.Schema({
   rollNo: {

@@ -4,6 +4,31 @@ import StudentModel from '../models/student';
 
 const router = express.Router();
 
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    const {
+      // eslint-disable-next-line no-unused-vars
+      id, courseCode, faculty, building, time, location,
+    } = req.body;
+
+    // SEE IF AFTER REMOVING U GET SOMETHING
+    const classOfStudent = await ClassModel.create(req.body);
+    if (!classOfStudent) {
+      res.json({ success: false, message: 'Class not found' });
+    } else {
+      res.json({
+        success: true,
+        message: 'Class removed successfully',
+        data: {
+          classOfStudent,
+        },
+      });
+    }
+  } catch (e) {
+    res.json({ success: false, message: e });
+  }
+});
+
 router.get('/:courseCode', async (req: Request, res: Response) => {
   try {
     const { courseCode } = req.params;
@@ -11,7 +36,7 @@ router.get('/:courseCode', async (req: Request, res: Response) => {
     if (!courseCode) {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
-    const classes = await ClassModel.find({ courseCode });
+    const classes = await ClassModel.findOne({ courseCode });
 
     if (!classes) {
       res.json({ success: false, message: 'Classes not found' });
@@ -29,16 +54,46 @@ router.get('/:courseCode', async (req: Request, res: Response) => {
   }
 });
 
-// Post /class/{studentId}:
-// o Adds a class to student’s entity if there are no clashes
+router.post('/:studentId', async (req:Request, res: Response) => {
+  try {
+    const { studentId } = req.params;
+    const {
+      // eslint-disable-next-line no-unused-vars
+      id, courseCode, faculty, building, time, location,
+    } = req.body;
+    if (!studentId) {
+      res.json({ success: false, message: 'Required fields cannot be empty' });
+    }
 
-// router.post('/:studentId', async (req:Request, res: Response) => {
-//     try{
-//         const { studentId } = req.params;
-//     }
-// })
+    const student = await StudentModel.findOne({ rollNo: studentId });
 
-router.post('/:studentId/:classId', async (req:Request, res: Response) => {
+    if (!student) {
+      res.json({ success: false, message: 'Student not found' });
+    }
+    const updatedStudent = await StudentModel.findOneAndUpdate(
+      { rollNo: studentId },
+      { $addToSet: { classes: req.body } },
+      { new: true },
+    );
+    if (updatedStudent) {
+      res.json({
+        success: true,
+        message: 'Classes updated successfully',
+        data: {
+          student: {
+            rollNo: updatedStudent.rollNo,
+            name: updatedStudent.name,
+            classes: updatedStudent.classes,
+          },
+        },
+      });
+    }
+  } catch (e) {
+    res.json({ success: false, message: e });
+  }
+});
+
+router.post('/:studentId/:classId', async (req: Request, res: Response) => {
   try {
     const { studentId, classId } = req.params;
     if (!studentId || !classId) {
@@ -47,8 +102,9 @@ router.post('/:studentId/:classId', async (req:Request, res: Response) => {
 
     // SEE IF AFTER REMOVING U GET SOMETHING
     const classOfStudent = await StudentModel.findOneAndDelete({
-      rollNo: studentId, 'classes.id': classId,
-    });
+      rollNo: studentId,
+      'classes.id': classId,
+    }, { new: true });
     if (!classOfStudent) {
       res.json({ success: false, message: 'Class not found' });
     } else {
@@ -65,14 +121,14 @@ router.post('/:studentId/:classId', async (req:Request, res: Response) => {
   }
 });
 
-router.get('/:studentId', async (req: Request, res: Response) => {
+router.get('/student/:studentId', async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
 
     if (!studentId) {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
-    const student = await StudentModel.findOne({ studentId });
+    const student = await StudentModel.findOne({ rollNo: studentId });
 
     if (!student) {
       res.json({ success: false, message: 'Student not found' });
@@ -90,15 +146,44 @@ router.get('/:studentId', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/classes-on-map/:courseCode', async (req:Request, res: Response) => {
-  try {
-    const { courseCode } = req.params;
-    if (!courseCode) {
-      res.json({ success: false, message: 'Required fields cannot be empty' });
+router.get(
+  '/classes-on-map/:courseCode',
+  async (req: Request, res: Response) => {
+    try {
+      const { courseCode } = req.params;
+      if (!courseCode) {
+        res.json({
+          success: false,
+          message: 'Required fields cannot be empty',
+        });
+      }
+
+      const classes = await ClassModel.findOne({ courseCode });
+
+      const students = await StudentModel.findOne({
+        'classes.courseCode': courseCode,
+      }).count();
+
+      if (!classes) {
+        res.json({ success: false, message: 'Classes not found' });
+      } else {
+        res.json({
+          success: true,
+          message: 'Classes found successfully',
+          data: {
+            classesId: classes.id,
+            courseCode: classes.courseCode,
+            building: classes.building,
+            studentsRegistered: students,
+            time: classes.time,
+            location: classes.location,
+          },
+        });
+      }
+    } catch (e) {
+      res.json({ success: false, message: e });
     }
-  } catch (e) {
-    res.json({ success: false, message: e });
-  }
-});
+  },
+);
 
 export default router;
