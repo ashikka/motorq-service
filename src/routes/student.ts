@@ -39,6 +39,8 @@ router.get('/:rollNo', async (req: Request, res: Response) => {
       return res.json({ succes: false, message: 'Student cannot be found' });
     }
 
+    (req.session as any).rollNo = rollNo;
+
     return res.json({
       success: true,
       message: 'Student found successfully',

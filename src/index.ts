@@ -1,5 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import session from 'express-session';
+
 import cors from 'cors';
 import http from 'http';
 import logger from './utils/logger';
@@ -11,6 +13,15 @@ dotenv.config();
 connectDB(process.env.DB_URL || '');
 
 const app = express();
+
+app.set('trust proxy', 1);
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dummy',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true },
+}));
 
 app.use(cors());
 
