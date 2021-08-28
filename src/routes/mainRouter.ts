@@ -1,8 +1,8 @@
 import express from 'express';
-import roomRouter from './room';
+import studentRouter from './student';
 
 const router = express.Router();
 
-router.use('/room', roomRouter);
+router.use('/student', studentRouter);
 
 export default router;
