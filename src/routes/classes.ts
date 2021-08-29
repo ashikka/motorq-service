@@ -186,6 +186,7 @@ router.get(
             classesId: c.id,
             courseCode: c.courseCode,
             courseName: c.courseName,
+            faculty: c.faculty,
             building: c.building,
             studentsRegistered: students,
             time: c.time,
