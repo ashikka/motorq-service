@@ -60,19 +60,22 @@ router.get('/:courseCode', async (req: Request, res: Response) => {
 router.post('/:studentId', async (req:Request, res: Response) => {
   try {
     const { studentId } = req.params;
-    const {
-      id, courseCode, courseName, faculty, building, time, location,
-    } = req.body;
+    // const {
+    //   id, courseCode, courseName, faculty, building, time, location,
+    // } = req.body;
     if (!studentId) {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
 
-    const student = await StudentModel.findOne({ rollNo: studentId, 'classes.time': time });
+    const student = await StudentModel.findOne({
+      rollNo: studentId,
+      'classes.time': req.body.courseDetails.time,
+    });
 
     if (!student) {
       const updatedStudent = await StudentModel.findOneAndUpdate(
         { rollNo: studentId },
-        { $push: { classes: req.body } },
+        { $push: { classes: req.body.courseDetails } },
         { new: true },
       );
       if (updatedStudent) {
@@ -105,10 +108,8 @@ router.post('/:studentId/:classId', async (req: Request, res: Response) => {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
 
-    const classOfStudent = await StudentModel.deleteMany({
-      rollNo: studentId,
-      'classes.id': classId,
-    });
+    const classOfStudent = await StudentModel.findOneAndUpdate({ rollNo: studentId },
+      { $pull: { classes: { id: classId } } });
 
     if (!classOfStudent) {
       res.json({ success: false, message: 'Class not found' });
