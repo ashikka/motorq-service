@@ -170,7 +170,7 @@ router.get(
         });
       }
 
-      const classes = await ClassModel.findOne({ courseCode });
+      const classes = await ClassModel.find({ courseCode });
 
       const students = await StudentModel.findOne({
         'classes.courseCode': courseCode,
@@ -182,14 +182,14 @@ router.get(
         res.json({
           success: true,
           message: 'Classes found successfully',
-          data: {
-            classesId: classes.id,
-            courseCode: classes.courseCode,
-            building: classes.building,
+          data: classes.map((c) => ({
+            classesId: c.id,
+            courseCode: c.courseCode,
+            building: c.building,
             studentsRegistered: students,
-            time: classes.time,
-            location: classes.location,
-          },
+            time: c.time,
+            location: c.location,
+          })),
         });
       }
     } catch (e) {
