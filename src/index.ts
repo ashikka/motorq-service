@@ -20,10 +20,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dummy',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true },
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 const server = http.createServer(app);
 
