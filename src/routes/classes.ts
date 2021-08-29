@@ -37,7 +37,7 @@ router.get('/:courseCode', async (req: Request, res: Response) => {
     if (!courseCode) {
       res.json({ success: false, message: 'Required fields cannot be empty' });
     }
-    const classes = await ClassModel.findOne({ courseCode });
+    const classes = await ClassModel.find({ courseCode });
 
     if (!classes) {
       res.json({ success: false, message: 'Classes not found' });
