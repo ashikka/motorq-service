@@ -4,7 +4,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/ashikka/motorq-service">
-    <img src="./assets/logo.png" alt="Logo" width="80">
+    <img src="./assets/logo.png" alt="Logo" width="140">
   </a>
 
   <h3 align="center">motorq-service</h3>
