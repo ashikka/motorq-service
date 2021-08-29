@@ -41,7 +41,7 @@
 ## About The Project
 
 Making a good timetalble while taking care of clashes is a mess! This application was made to take care of that automatically for you. You can build your timetable, check for clashes and even render a map showing the distance between all the classes! Now managing your timetable is so easy!
-
+Demo video: https://www.loom.com/share/b4bea88deefe433baa38d1dffe4017af
 ### Built With
 
 * [express](https://www.npmjs.com/package/express)
