@@ -101,7 +101,7 @@ router.post('/:studentId', async (req:Request, res: Response) => {
 
 /* ------------- Deletes a class with the given classId from the student’s entity ---------------*/
 
-router.post('/:studentId/:classId', async (req: Request, res: Response) => {
+router.delete('/:studentId/:classId', async (req: Request, res: Response) => {
   try {
     const { studentId, classId } = req.params;
     if (!studentId || !classId) {

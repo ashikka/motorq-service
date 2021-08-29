@@ -1,30 +1,27 @@
-[![csivit][csivitu-shield]][csivitu-url]
 [![Issues][issues-shield]][issues-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/ashikka/sike-service">
-    <img src="./assets/logo.png" alt="Logo" width="80">
+  <a href="https://github.com/ashikka/motorq-service">
+    <img src="./assets/logo.png" alt="Logo" width="140">
   </a>
 
-  <h3 align="center">sike-service</h3>
+  <h3 align="center">motorq-service</h3>
 
   <p align="center">
-    The popular game Psych made better! 
+    Course registration and Timetable management system to make your student life easier!
     <br />
-    <a href="https://github.com/ashikka/sike-service"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/ashikka/motorq-service"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/ashikka/sike-service">View Demo</a>
+    <a href="https://github.com/ashikka/motorq-service">View Demo</a>
     ·
-    <a href="https://github.com/ashikka/sike-service/issues">Report Bug</a>
+    <a href="https://github.com/ashikka/motorq-service/issues">Report Bug</a>
     ·
-    <a href="https://github.com/ashikka/sike-service/issues">Request Feature</a>
+    <a href="https://github.com/ashikka/motorq-service/issues">Request Feature</a>
   </p>
 </p>
-
-
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -40,31 +37,18 @@
 * [License](#license)
 * [Contributors](#contributors-)
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-We’re sure you’ve played *PSYCH!*, a fun guessing game by Ellen DeGeneres, where trivia meets Cards Against Humanity. Then you must also be aware of how the game recently has become increasingly monetized making it a bit difficult to play it your friends.
-
- We have developed a website to get your needs covered with this website version of *PSYCH!*. Choose from a variety of fun and hilarious categories, such as “The Truth Comes Out,” in which you and your friends become the game! Get ready to answer funny and ridiculous questions about one another. 
-
-**Sike!** is the perfect free website for family or friends game night, Zoom calls, road trips, or even waiting in line! Grab your devices, gather ‘round, and get ready for a gaming experience unlike any other house party game you’ve ever played!
-
-
-
+Making a good timetalble while taking care of clashes is a mess! This application was made to take care of that automatically for you. You can build your timetable, check for clashes and even render a map showing the distance between all the classes! Now managing your timetable is so easy!
+Demo video: https://www.loom.com/share/b4bea88deefe433baa38d1dffe4017af
 ### Built With
 
 * [express](https://www.npmjs.com/package/express)
 * [nodemon](https://www.npmjs.com/package/nodemon)
-* [joi](https://www.npmjs.com/package/nodemon)
-* [uuid](https://www.npmjs.com/package/uuid)
 * [mongoose](https://www.npmjs.com/package/mongoose)
-* [socket.io](https://www.npmjs.com/package/socket.io)
 * [winston](https://www.npmjs.com/package/winston)
-
-
-
+* [typescript](https://www.typescriptlang.org)
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -73,7 +57,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+Install global dependencies
 * npm
 ```sh
 npm install npm@latest -g
@@ -88,28 +72,36 @@ npm install -g typescript
  
 1. Clone the repo
 ```sh
-git clone https://github.com/ashikka/sike-service.git
+git clone https://github.com/ashikka/motorq-service.git
+cd motorq-service
 ```
 2. Install NPM packages
 ```sh
 npm install
 ```
 
-
+2. Start the project
+```sh
+npm run dev
+```
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## API specification
 
-### 1. Create room
+### 1. Create a new class for a specific course
 ```http
-  POST /room/create
+  POST /class
 ```
 
 | Parameter | Type     | Description                     |
 | :--------: | :-------: | :------------------------------: |
-| `body`    | `string` |  username |
-| `body`    | `number` | rounds |
-
+| `body`    | `string` |  courseCode |
+| `body`    | `number` | courseName |
+| `body`    | `string` |  building |
+| `body`    | `string` |  faculty |
+| `body`    | `string` |  time |
+| `body`    | `number` |  location.latitude |
+| `body`    | `number` |  location.longitude |
 
 
 ### Response format
@@ -117,37 +109,230 @@ npm install
 ```json
 {
     "success": true,
-    "message": "Game created successfully",
+    "message": "Class created successfully",
     "data": {
-        "rounds": 1,
-        "roomId": "someRandomUUID",
-        "creator": "creatorName"
+        "classOfStudent": {
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "courseCode": "MAT-2021",
+          "courseName": "Calculus",
+          "building": "sjt-403",
+          "faculty": "Peri Kameswaram",
+          "time": "14:00",
+          "location": {
+            "latitude": 40.858689,
+            "longitude": 96.784136
+          }
+        }
     }
 }
 ```
 
-
-### 2. Join a created room
-
+### 2. Get classes for given courseCode
 ```http
-POST /room/join/:roomId
+  GET /class/:courseCode
 ```
 
-| Parameter | Type | Description                       |
-| :--------: | :---: | :--------------------------------: |
-| `body`     | `string` | username |
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  courseCode |
 
 
-
-### Response Format
+### Response format
 
 ```json
 {
     "success": true,
-    "message": "Room joined successfully",
+    "message": "Classes found successfully",
     "data": {
-        "players": 4,
-        "roomId": "someRandomUUID"
+        "classes": [{
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "courseCode": "MAT-2021",
+          "courseName": "Calculus",
+          "building": "sjt-403",
+          "faculty": "Peri Kameswaram",
+          "time": "14:00",
+          "location": {
+            "latitude": 40.858689,
+            "longitude": 96.784136
+          }
+        }]
+    }
+}
+```
+
+### 3. Add new class to student if no clashes
+```http
+  POST /class/:studentId
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  studentId |
+| `body`    | `string` |  courseCode |
+| `body`    | `number` | courseName |
+| `body`    | `string` |  building |
+| `body`    | `string` |  faculty |
+| `body`    | `string` |  time |
+| `body`    | `number` |  location.latitude |
+| `body`    | `number` |  location.longitude |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Classes updated successfully",
+    "data": {
+        "rollNo": "19BCE0002",
+        "name": "Ravi sharma",
+        "classes": [{
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "courseCode": "MAT-2021",
+          "courseName": "Calculus",
+          "building": "sjt-403",
+          "faculty": "Peri Kameswaram",
+          "time": "14:00",
+          "location": {
+            "latitude": 40.858689,
+            "longitude": 96.784136
+          }
+        }]
+    }
+}
+```
+
+### 4. Deletes a class with the given classId from the student’s entity
+```http
+  DELETE /class/:studentId/:classId
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  studentId |
+| `params`    | `string` |  classId |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Class removed successfully",
+    "data": {
+        "classes": []
+    }
+}
+```
+
+### 5. Gets all the classes registered by the student with rollNo
+```http
+  GET /class/student/:studentId
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  studentId |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Classes found successfully",
+    "data": {
+        "classes": [{
+          "id": "123e4567-e89b-12d3-a456-426614174000",
+          "courseCode": "MAT-2021",
+          "courseName": "Calculus",
+          "building": "sjt-403",
+          "faculty": "Peri Kameswaram",
+          "time": "14:00",
+          "location": {
+            "latitude": 40.858689,
+            "longitude": 96.784136
+          }
+        }]
+    }
+}
+```
+
+### 6. Get an array of classes of the given courseCode on map
+```http
+  GET /class/classes-on-map/:courseCode
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  courseCode |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Classes found successfully",
+    "data": [{
+        "classesId": "123e4567-e89b-12d3-a456-426614174000",
+        "courseCode": "MAT-2021",
+        "courseName": "Calculus",
+        "building": "sjt-403",
+        "faculty": "Peri Kameswaram",
+        "studentsRegistered": 1,
+        "time": "14:00",
+        "location": {
+          "latitude": 40.858689,
+          "longitude": 96.784136
+        }
+    }]
+}
+```
+
+### 7. Register a new student
+```http
+  POST /student
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `body`    | `string` |  rollNo |
+| `body`    | `string` |  name |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Data posted successfully",
+    "data": {
+     "rollNo": "19BCE0002",
+        "name": "Ravi sharma"
+    }
+}
+```
+
+### 8. Register a new student
+```http
+  GET /student/:rollNo
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  rollNo |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Student found successfully",
+    "data": {
+     "rollNo": "19BCE0002",
+        "name": "Ravi sharma"
     }
 }
 ```
@@ -155,9 +340,7 @@ POST /room/join/:roomId
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/ashikka/sike-service/issues) for a list of proposed features (and known issues).
-
-
+See the [open issues](https://github.com/ashikka/motorq-service/issues) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -177,12 +360,7 @@ You are requested to follow the contribution guidelines specified in [CONTRIBUTI
 
 Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
 
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[csivitu-shield]: https://img.shields.io/badge/csivitu-csivitu-blue
-[csivitu-url]: https://csivit.com
-[issues-shield]: https://img.shields.io/github/issues/csivitu/Template.svg?style=flat-square
-[issues-url]: https://github.com/ashikka/sike-service/issues
+[issues-shield]: https://img.shields.io/github/issues/csivitu/template.svg
+[issues-url]: https://github.com/ashikka/motorq-service/issues

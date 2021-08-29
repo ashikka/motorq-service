@@ -1,5 +1,5 @@
 {
-  "name": "sike-service",
+  "name": "motorq-service",
   "description": "[![csivit][csivitu-shield]][csivitu-url] [![Issues][issues-shield]][issues-url]",
   "version": "1.0.0",
   "main": "build/index.js",
@@ -32,19 +32,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.ts",
-    "start": "tsc -p .",
-    "build": "node ./build/index.js",
+    "build": "tsc -p .",
+    "start": "node ./build/index.js",
     "lint": "eslint \"src/**/*.{ts,js,jsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,js,jsx}\" --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ashikka/sike-service.git"
+    "url": "git+https://github.com/ashikka/motorq-service.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ashikka/sike-service/issues"
+    "url": "https://github.com/ashikka/motorq-service/issues"
   },
-  "homepage": "https://github.com/ashikka/sike-service#readme"
+  "homepage": "https://github.com/ashikka/motorq-service#readme"
 }
