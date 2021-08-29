@@ -218,7 +218,7 @@ npm run dev
 ```json
 {
     "success": true,
-    "message": "Classes updated successfully",
+    "message": "Class removed successfully",
     "data": {
         "classes": []
     }
@@ -240,7 +240,7 @@ npm run dev
 ```json
 {
     "success": true,
-    "message": "Classes updated successfully",
+    "message": "Classes found successfully",
     "data": {
         "classes": [{
           "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -273,7 +273,7 @@ npm run dev
 ```json
 {
     "success": true,
-    "message": "Classes updated successfully",
+    "message": "Classes found successfully",
     "data": [{
         "classesId": "123e4567-e89b-12d3-a456-426614174000",
         "courseCode": "MAT-2021",
@@ -287,6 +287,53 @@ npm run dev
           "longitude": 96.784136
         }
     }]
+}
+```
+
+### 7. Register a new student
+```http
+  POST /student
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `body`    | `string` |  rollNo |
+| `body`    | `string` |  name |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Data posted successfully",
+    "data": {
+     "rollNo": "19BCE0002",
+        "name": "Ravi sharma"
+    }
+}
+```
+
+### 8. Register a new student
+```http
+  GET /student/:rollNo
+```
+
+| Parameter | Type     | Description                     |
+| :--------: | :-------: | :------------------------------: |
+| `params`    | `string` |  rollNo |
+
+
+### Response format
+
+```json
+{
+    "success": true,
+    "message": "Student found successfully",
+    "data": {
+     "rollNo": "19BCE0002",
+        "name": "Ravi sharma"
+    }
 }
 ```
 
