@@ -79,8 +79,15 @@ cd motorq-service
 ```sh
 npm install
 ```
+3. Add the necessary environment variables to a `.env` file.
+```sh
+{
+        echo 'PORT='
+        echo 'DB_URL='
+} >> .env
+```
 
-2. Start the project
+4. Start the project
 ```sh
 npm run dev
 ```
