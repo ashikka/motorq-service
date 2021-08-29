@@ -9,6 +9,9 @@ export const ClassSchema = new mongoose.Schema({
   courseCode: {
     type: String,
   },
+  courseName: {
+    type: String,
+  },
   faculty: {
     type: String,
   },

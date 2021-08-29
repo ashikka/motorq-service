@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/', async (req: Request, res: Response) => {
   try {
     const {
-      id, courseCode, faculty, building, time, location,
+      id, courseCode, courseName, faculty, building, time, location,
     } = req.body;
 
     const classOfStudent = await ClassModel.create(req.body);
@@ -61,7 +61,7 @@ router.post('/:studentId', async (req:Request, res: Response) => {
   try {
     const { studentId } = req.params;
     const {
-      id, courseCode, faculty, building, time, location,
+      id, courseCode, courseName, faculty, building, time, location,
     } = req.body;
     if (!studentId) {
       res.json({ success: false, message: 'Required fields cannot be empty' });
@@ -185,6 +185,7 @@ router.get(
           data: classes.map((c) => ({
             classesId: c.id,
             courseCode: c.courseCode,
+            courseName: c.courseName,
             building: c.building,
             studentsRegistered: students,
             time: c.time,

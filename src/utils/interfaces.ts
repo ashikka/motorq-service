@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface ClassDocSchema extends mongoose.Document{
   id: string,
   courseCode: string,
+  courseName: string,
   faculty: string,
   building: string,
   time: string,
